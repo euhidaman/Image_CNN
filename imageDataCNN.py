@@ -117,7 +117,8 @@ model.compile(optimizer=Adam(learning_rate=0.0001),
 model.fit(x=train_batches, validation_data=valid_batches, epochs=10, verbose=2)
 
 # %%
-# Predicting labels for Test Images
+# ------------------Predicting labels for Test Images----------------------
+
 # Taking a batch of test-data, and predicting for it
 test_imgs, test_labels = next(test_batches)
 plotImages(test_imgs)
@@ -176,5 +177,37 @@ test_batches.class_indices
 # %%
 cm_plot_labels = ['cat', 'dog']
 plot_confusion_matrix(cm=cm, classes=cm_plot_labels, title='Confusion Matrix')
+
+# %%
+# --------------------Building Fine-Tuned VGG16 Model---------------------------
+
+# Download Model from Internet
+vgg16_model = tf.keras.applications.vgg16.VGG16()
+
+# %%
+vgg16_model.summary()
+
+# %%
+
+# The VGG16 model is a functional model
+# So, we need to convert it into a Sequential model.
+# And, that's why we do the below thing,
+# which puts all the model values from start to second-last.
+model = Sequential()
+for layer in vgg16_model.layers[:-1]:
+    model.add(layer)
+
+# %%
+
+# This code, freezes the trainable parameters of the new model.
+# Reason - We don't want to train it again, so as to not update the weights in the model.
+# Bcz, VGG16 has already pre-learnt the fetures of Cats & Dogs
+for layer in model.layers:
+    layer.trainable = False
+
+# Manually, add the last layer of 2 nodes
+# (bcz, we are trying to find, whether an image belongs to the classes of : Cats/Dogs)
+model.add(Dense(units=2, activation='softmax'))
+model.summary()
 
 # %%
