@@ -1,6 +1,7 @@
 # %%
 from tabnanny import verbose
 import numpy as np
+from sklearn.model_selection import validation_curve
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.models import Sequential
@@ -209,5 +210,32 @@ for layer in model.layers:
 # (bcz, we are trying to find, whether an image belongs to the classes of : Cats/Dogs)
 model.add(Dense(units=2, activation='softmax'))
 model.summary()
+
+# %%
+# Compiling and Training the modified VGG16 model
+model.compile(optimizer=Adam(learning_rate=0.0001),
+              loss='categorical_crossentropy', metrics=['accuracy'])
+
+model.fit(x=train_batches, validation_data=valid_batches, epochs=5, verbose=2)
+
+# %%
+
+# Predict using new model
+predictions = model.predict(x=test_batches, verbose=0)
+
+test_batches.classes
+
+# %%
+# Plotting the Confusion Matrix
+cm = confusion_matrix(y_true=test_batches.classes,
+                      y_pred=np.argmax(predictions, axis=-1))
+
+# %%
+test_batches.class_indices
+
+# %%
+cm_plot_labels = ['cat', 'dog']
+
+plot_confusion_matrix(cm=cm, classes=cm_plot_labels, title='Confusion Matrix')
 
 # %%
