@@ -37,6 +37,8 @@ def prepare_image(file):
 
 
 # %%
+
+# -------------------- First Image---------------------
 # Display the image to be processed, and to be predicted
 Image(filename='data/MobileNet-samples/1.jpg', width=300, height=200)
 
@@ -51,6 +53,19 @@ predictions = mobile.predict(preprocessed_image)
 results = imagenet_utils.decode_predictions(predictions)
 
 # Display the predictions
+results
+
+# %%
+# ---------------------- Second Image----------------------
+Image(filename='data/MobileNet-samples/panda.jpg', width=500, height=300)
+
+# %%
+preprocessed_image = prepare_image('panda.jpg')
+
+predictions = mobile.predict(preprocessed_image)
+
+results = imagenet_utils.decode_predictions(predictions)
+
 results
 
 # %%
